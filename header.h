@@ -29,7 +29,10 @@ void endstartend(int* arr, char* string){
     arr[2] = i-1;
 }
 
-
+int dot_filnder(char* my_string){
+    int i = 1;
+    while(my_string[i]!='.'){i++;}
+    return i;}
 //*******************************************************
 //***************** INSERTING FUNCTIONS *****************
 //*******************************************************
@@ -131,6 +134,43 @@ struct Section* linked_list_creator(FILE* fp, struct Section* head){
     cur = fgetc(fp);
 }
 return head;}
+
+//*******************************************************
+//***************** S E A R C H I N G********************
+//*******************************************************
+
+char* klucznik(char* sname, char* ename, struct Section* head){
+    struct Section* curs; //current section
+    struct Entry* cure; //current entry
+    char* value;
+    int val_len;
+    curs = head;
+    while(strcmp(curs->name,sname) != 0){
+            printf("name:%s of len: is not %s \n",curs->name, sname);
+            if(curs->next){
+                    curs = curs->next;
+            }else{
+                printf("SECTION NOT FOUND!\n");
+                return NULL;
+            }
+    }
+    cure = curs->first;
+    while(strcmp(cure->key,ename)!=0){
+        printf("name key :%s is not %s\n",cure->key, ename);
+        if(cure->next){
+            cure = cure->next;
+        }else{
+            printf("ENTRY NOT FOUND!\n");
+            return NULL;
+            }
+    }
+    val_len = strlen(value);
+    value = malloc((val_len+1)*sizeof(char));
+    strcpy(value, cure->value);
+    value[val_len] = '\0';
+return value;}
+
+
 //*******************************************************
 //************** TOTALNE ZNISCZENIE *********************
 //*******************************************************
@@ -145,9 +185,9 @@ void uroboros(struct Section* head){
 
     while(curs){
     cure = curs->first;
-        printf("deleting the section %s\n", curs->name);
+        //printf("deleting the section %s\n", curs->name);
         while(cure){
-            printf("deleting the entry: name: %s, value: %s\n", cure->key, cure->value);
+            //printf("deleting the entry: name: %s, value: %s\n", cure->key, cure->value);
             free(cure->value);
             free(cure->key);
             tempe = cure->next;
