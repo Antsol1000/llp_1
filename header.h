@@ -2,6 +2,8 @@
 #define _HEADER_H_
 #include <stdbool.h>
 
+// FUNCTIONAL STRUCTURES
+
 struct Entry{
     char* key;
     char* value;
@@ -19,6 +21,13 @@ struct Returner{
     struct Section* section;
 };
 
+struct Name_returner{
+    char* section;
+    char* key;
+};
+
+// HELPER FUNCTIONS
+
 void endstartend(int* arr, char* string){
     int i = 0;
     while(string[i] != ' '){i++;}
@@ -29,10 +38,55 @@ void endstartend(int* arr, char* string){
     arr[2] = i-1;
 }
 
-int dot_filnder(char* my_string){
+int dot_finder(char* my_string){
     int i = 1;
     while(my_string[i]!='.'){i++;}
     return i;}
+
+
+int isvalid(char* str, int len){
+    //printf("The string %s, len %d", str, len);
+    int i = 0;
+    while(((isalnum(str[i])!=0) || str[i] == '-') && i<(len)){i++;}
+    if(i == (len)){return 1;}
+    else{return 0;}
+}
+
+int extended_validity_checker(char* section1, char* key1){
+    int sv = isvalid(section1, strlen(section1));
+    int kv = isvalid(key1, strlen(key1));
+
+    if((sv+kv) <2){
+        if((sv + kv) ==0){printf("Name of key and section is invalid, try again!\n");}
+        else{
+            if(sv==0){printf("Section name invalid, try again!\n");}
+            else{printf("Key name invalid, try again!\n");}}
+    return 0;}
+return 1;}
+
+//*******************************************************
+//******************ARGUMENT HANDLING********************
+//*******************************************************
+
+struct Name_returner* getting_section_key_name(int len_exp, char* expression, struct Name_returner* r){
+    int len_of_key;
+    int len_of_section;
+
+    len_of_section = dot_finder(expression);
+    len_of_key = len_exp-len_of_section-1;
+
+    char* section1 = malloc((len_of_section +1)*sizeof(char));
+    char* key1 = malloc((len_of_key +1)*sizeof(char));
+
+    strncpy(section1, expression,len_of_section);
+    strncpy(key1, expression+ len_of_section + 1,len_of_key);
+
+    key1[len_of_key] = '\0';
+    section1[len_of_section] = '\0';
+
+    r->key = key1;
+    r->section =  section1;
+return r;}
 //*******************************************************
 //***************** INSERTING FUNCTIONS *****************
 //*******************************************************
@@ -94,10 +148,13 @@ struct Returner* insert(int* state, char* line, struct Returner* r){
         }
     }
 return r;}
+
 //*******************************************************
 //*************** TWORZENIE LINKED LISTY*****************
 //*******************************************************
-struct Section* linked_list_creator(FILE* fp, struct Section* head){
+
+struct Section* linked_list_creator(FILE* fp){
+    struct Section* head;
     struct Returner ret;
     ret.entry = NULL;
     ret.section = NULL;
@@ -107,7 +164,6 @@ struct Section* linked_list_creator(FILE* fp, struct Section* head){
     int* ptrst = &state;
 
     size_t size = 5;
-    size_t data_size = size - 1;
     int cur = fgetc(fp);
     while (!feof(fp)){
         char * buf = malloc(size);
@@ -146,29 +202,40 @@ char* klucznik(char* sname, char* ename, struct Section* head){
     int val_len;
     curs = head;
     while(strcmp(curs->name,sname) != 0){
-            printf("name:%s of len: is not %s \n",curs->name, sname);
+            //printf("name:%s of len: is not %s \n",curs->name, sname);
             if(curs->next){
                     curs = curs->next;
             }else{
-                printf("SECTION NOT FOUND!\n");
+                printf("Failed to find section [%s]\n", sname);
                 return NULL;
             }
     }
     cure = curs->first;
     while(strcmp(cure->key,ename)!=0){
-        printf("name key :%s is not %s\n",cure->key, ename);
+        //printf("name key :%s is not %s\n",cure->key, ename);
         if(cure->next){
             cure = cure->next;
         }else{
-            printf("ENTRY NOT FOUND!\n");
+            printf("Failed to find key %s in section [%s]\n", ename,sname);
             return NULL;
             }
     }
-    val_len = strlen(value);
+    val_len = strlen(cure->value);
     value = malloc((val_len+1)*sizeof(char));
     strcpy(value, cure->value);
     value[val_len] = '\0';
 return value;}
+
+//*******************************************************
+//************** O P E R A T I O N S ********************
+//*******************************************************
+/// for the grade of 5
+
+char* operations(char* section1, char* key1, char* operation, char* section2, char*key2){
+    char* output = "NO TUTAJ JESZCZE BEDZIE OGARNIANE";
+
+return output;}
+
 
 
 //*******************************************************
@@ -199,6 +266,7 @@ void uroboros(struct Section* head){
         free(curs);
         curs = temps;
     }
-printf("MEMORY SUCCESFULLY FREED!\n");
+
+printf("MEMORY SUCCESFULLY FREED!\n"); // to tylko do sprawdzania od razu czy na pewno nic siê nie wywala
 }
 #endif // _HEADER_H_

@@ -3,6 +3,7 @@
 #include <string.h>
 #include "header.h"
 
+
 int main( int argc, char *argv[] )  {
 char* filename;
 char* expression;
@@ -11,37 +12,63 @@ char* val1;
 
 filename = argv[1];
 
-if(argc == 3){
-    int len_exp = strlen(argv[2]);
-    expression = malloc((len_exp+1)*sizeof(char));
-    strcpy(expression, argv[2]);
-    expression[len_exp] = '\0';
-
-    int len_of_section = dot_filnder(expression);
-    int len_of_key = len_exp-len_of_section-1;
-
-    section1 = malloc((len_of_section +1)*sizeof(char));
-    key1 = malloc((len_of_key +1)*sizeof(char));
-    strncpy(section1, expression,len_of_section);
-    strncpy(key1, expression+ len_of_section + 1,len_of_key);
-    key1[len_of_key] = '\0';
-    section1[len_of_section] = '\0';
-}
-//status - 0= no entry ever; 1- inside a section;2 - between sections
-
 //FILE HANDLING
 FILE* fp;
 struct Section* head;
 fp = fopen(filename, "r");
-head = linked_list_creator(fp, head);
+head = linked_list_creator(fp);
 
-//SEARCHING
-val1 = klucznik(section1, key1,head);
-printf("THE VALUE: %s\n", val1);
-//CLOSING
+//READING THE ARGUMENTS - whole expression
+int len_exp = strlen(argv[argc - 1]);
+expression = malloc((len_exp+1)*sizeof(char));
+strcpy(expression, argv[argc - 1]);
+expression[len_exp] = '\0';
+
+//tutaj to typowe szukañsko
+if(argc == 3){
+
+    struct Name_returner* r = malloc(sizeof(struct Name_returner*));
+    r = getting_section_key_name(len_exp,expression, r);
+    section1 = r->section;
+    key1 = r->key;
+
+    if( extended_validity_checker(section1, key1)== 1){
+    val1 = klucznik(section1, key1,head);
+    if(val1){printf("The value: %s\n", val1);}
+    }
+    //freeing
+    free(key1); free(section1); free(r);
+}
+else if(argc == 4){//tutaj to specjalne
+    struct Name_returner* r1 = malloc(sizeof(struct Name_returner*));
+    struct Name_returner* r2 = malloc(sizeof(struct Name_returner*));
+    char* expression1; char* expression2;
+    char* operation; char* output;
+
+    char* section2; char* key2;
+    expression1 = strtok(expression, " ");
+    operation = strtok(NULL, " ");
+    expression2 = strtok(NULL, " ");
+
+    r1 = getting_section_key_name(strlen(expression1),expression1, r1);
+    section1 = r1->section;
+    key1 = r1->key;
+
+    r2 = getting_section_key_name(strlen(expression2),expression2, r2);
+    section2 = r2->section;
+    key2 = r2->key;
+
+    output = operations(section1, key1, operation, section2, key2);
+    printf("the outcome: %s\n", output);
+
+    //freeing the memory
+    free(key1); free(key2); free(section1); free(section2); free(r1); free(r2);
+
+}
+
 fclose(fp);
+free(expression);
 uroboros(head);
-
 
 return 0;}
 
