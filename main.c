@@ -36,10 +36,8 @@ if(argc == 3){
     section1 = r->section;
     key1 = r->key;
 
-    if( extended_validity_checker(section1, key1)== 1){
     val1 = klucznik(section1, key1, head);
     if(val1){printf("The value: %s\n", val1);}
-    }
     //freeing
     free(key1); free(section1); free(r);
 }
@@ -68,6 +66,8 @@ else if(argc == 4){//tutaj to specjalne
     free(key1); free(key2); free(section1); free(section2); free(r1); free(r2);
 
 }
+printf("\n Checking validity of identifiers . . . \n");
+inspector(head);
 fclose(fp);
 free(expression);
 uroboros(head);

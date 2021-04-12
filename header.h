@@ -71,12 +71,12 @@ int extended_validity_checker(char* section1, char* key1){
     int kv = isvalid(key1, strlen(key1));
 
     if((sv+kv) <2){
-        if((sv + kv) ==0){printf("Name of key and section is invalid, try again!\n");}
+        if((sv + kv) ==0){printf("Name of key and section of the record: [%s] \"%s\" is invalid.\n", section1, key1);}
         else{
-            if(sv==0){printf("Section name invalid, try again!\n");}
-            else{printf("Key name invalid, try again!\n");}}
-    return 0;}
-return 1;}
+            if(sv==0){printf("Section name of the record: [%s] \"%s\" is invalid.\n", section1, key1);}
+            else{printf("Key name of the record: [%s] \"%s\" is invalid.\n", section1, key1);}}
+    return 1;}
+return 0;}
 
 //*******************************************************
 //******************ARGUMENT HANDLING********************
@@ -230,7 +230,7 @@ char* klucznik(char* sname, char* ename, struct Section* head){
         if(cure->next){
             cure = cure->next;
         }else{
-            printf("Failed to find key %s in section [%s]\n", ename,sname);
+            printf("Failed to find key \"%s\" in section [%s]\n", ename,sname);
             return NULL;
             }
     }
@@ -280,11 +280,13 @@ void operations(struct Section* head,char* section1, char* key1, char* operation
 
     char* value1 = klucznik(section1,key1, head);
     char* value2 = klucznik(section2,key2, head);
-
+    if(value1!=NULL && value2!= NULL){
     if(is_a_num(value1) && is_a_num(value2)){op_num(section1,key1,value1,operation, section2,key2, value2);}
     else{op_str(section1,key1,value1,operation, section2,key2, value2);}
  //free(value1); free(value2);
- }
+    }
+    else{printf("Therefore not able to execute operation!\n");}
+}
 
 //*******************************************************
 //************** TOTALNE ZNISCZENIE *********************
@@ -313,5 +315,22 @@ void uroboros(struct Section* head){
     }
 
 //printf("MEMORY SUCCESFULLY FREED!\n"); // to tylko do sprawdzania od razu czy na pewno nic siê nie wywala
+}
+void inspector(struct Section* head){
+    struct Section* curs; // obecna sekcja
+    struct Entry* cure; // obecne entry
+    struct Section* temps; // temporary var to free memory
+    struct Entry* tempe; // -||-
+    int i =0;
+    curs = head;
+    while(curs){
+    cure = curs->first;
+        while(cure){
+            i+= extended_validity_checker(curs->name,cure->key);
+            cure = cure->next;
+        }
+        curs = curs->next;
+    }
+    printf("I have found %d records with invalid identifiers.\n", i);
 }
 #endif // _HEADER_H_
