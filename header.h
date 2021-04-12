@@ -243,9 +243,9 @@ return cure->value;
 /// for the grade of 5
 
 void op_num(char* section1, char* key1, char* val1, char* operation, char* section2, char*key2, char* val2){
-    long int nval1 = atol(val1);
-    long int nval2 = atol(val2);
-    long int result;
+    long long int nval1 = atoll(val1);
+    long long int nval2 = atoll(val2);
+    long long int result;
 
     switch(op_check(operation)){
     case 1:
@@ -261,7 +261,7 @@ void op_num(char* section1, char* key1, char* val1, char* operation, char* secti
         result = nval1 / nval2;
         break;
         }
-    printf("%s.%s %s %s.%s  = %ld\n", section1, key1, operation, section2, key2, result);
+    printf("%s.%s %s %s.%s  = %lld\n", section1, key1, operation, section2, key2, result);
 }
 
 void op_str(char* section1, char* key1, char* val1, char* operation, char* section2, char*key2, char* val2){
