@@ -45,7 +45,7 @@ else if(argc == 4){//tutaj to specjalne
     struct Name_returner* r1 = malloc(sizeof(struct Name_returner));
     struct Name_returner* r2 = malloc(sizeof(struct Name_returner));
     char* expression1; char* expression2;
-    char* operation; char* output;
+    char* operation;
 
     char* section2; char* key2;
     expression1 = strtok(expression, " ");

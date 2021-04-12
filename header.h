@@ -213,7 +213,6 @@ return head;}
 char* klucznik(char* sname, char* ename, struct Section* head){
     struct Section* curs; //current section
     struct Entry* cure; //current entry
-    int val_len;
     curs = head;
     while(strcmp(curs->name,sname) != 0){
             //printf("name:%s of len: is not %s \n",curs->name, sname);
@@ -272,8 +271,11 @@ void op_str(char* section1, char* key1, char* val1, char* operation, char* secti
         strcpy(result, val1);
         strcat(result, val2);
         result[leng_w] = '\0';
-        printf("%s.%s + %s.%s  = %s\n", section1, key1, section2, key2, result);}
+        printf("%s.%s + %s.%s  = %s\n", section1, key1, section2, key2, result);
+        free(result);
+        }
     else{ printf("%s.%s %s %s.%s is an invalid operation\n", section1, key1,operation, section2, key2);}
+
 }
 
 void operations(struct Section* head,char* section1, char* key1, char* operation, char* section2, char*key2){
@@ -319,8 +321,6 @@ void uroboros(struct Section* head){
 void inspector(struct Section* head){
     struct Section* curs; // obecna sekcja
     struct Entry* cure; // obecne entry
-    struct Section* temps; // temporary var to free memory
-    struct Entry* tempe; // -||-
     int i =0;
     curs = head;
     while(curs){
